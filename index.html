@@ -1,0 +1,139 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Opens3 by Pablo-Merino</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/Pablo-Merino/OpenS3">Fork On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/Pablo-Merino/OpenS3/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/Pablo-Merino/OpenS3/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Opens3</h1>
+          <p>OpenS3 is basically a storage server</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/Pablo-Merino">Pablo-Merino</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></span>
+        </div>
+
+        <h1>OpenS3</h1>
+
+<p>OpenS3 is basically a storage server. What it does is provide a JSON API to upload and download files to a specified path. It includes a bucket feature to organize uploads.</p>
+
+<h3>Details!</h3>
+
+<p>Uses Thin as HTTP server and rack for interacting with it. For uploading, listing and downloading files you'll need a token, which is a SHA512 of a string you choose. You'll also need to set an expiry time for a link when downloading.</p>
+
+<h3>Configuration</h3>
+
+<p>The configuration is based on a YAML file:</p>
+
+<pre><code>---
+dir: ./storage
+port: 8000
+token: TestKey
+</code></pre>
+
+<p>As you can see, <code>dir</code> sets the data directory, <code>port</code> sets the port where the server should listen and <code>token</code> sets the string which, after being SHA512'ed, will be the token.</p>
+
+<p>You can also configure this via command line</p>
+
+<pre><code>opens3 -p 8000 -d ./storage -t SomeToken
+</code></pre>
+
+<p>But using a config file is highly recommended:</p>
+
+<pre><code>opens3 -c my_config_file.yml
+</code></pre>
+
+<p>The SHA512 token will be shown on the console on launch.</p>
+
+<h3>API</h3>
+
+<p>The API is simple:</p>
+
+<h5>Basic Upload form and Info</h5>
+
+<p><code>GET /</code> for the upload form</p>
+
+<p><code>GET /info</code> for the info form, which only contains the hostname</p>
+
+<h4>Upload</h4>
+
+<p><code>POST /upload</code>: You'll need to set the file to the <code>file</code> param, the previously mentioned token on the <code>token</code> param and the <code>bucket</code> param for the bucket (it'll be auto created if it doesn't exists).</p>
+
+<h4>Download and listing</h4>
+
+<p><code>GET /list</code>: You'll need to specify the <code>token</code> param with the token and the <code>bucket</code> param with the bucket you'd wish to list</p>
+
+<p><code>GET /file</code>: You'll need to specify a <code>name</code> param with the wanted filename, a <code>bucket</code> param with the bucket of the file, a <code>token</code> param with the access token, and a <code>expire</code> param with the epoch time (<code>Time.now.to_i</code> in Ruby) of link expiration.</p>
+
+<h4>Errors</h4>
+
+<ul>
+<li>100: The path doesn't exists</li>
+<li>101: The file was not found</li>
+<li>102: The file already exists (not used since the upload replaces the current file)</li>
+<li>103: Bucket not found</li>
+<li>104: Bucket not specified</li>
+<li>105: The link has expired</li>
+<li>106: Wrong token</li>
+<li>107: No file specified on the upload method</li>
+</ul><h4>Responses</h4>
+
+<p>All the responses will be on JSON format.
+<code>GET /info</code> will return something like <code>{"hostname":"localhost:8000"}</code> </p>
+
+<p><code>GET /list</code> will return an array with all the bucket files like <code>["avatar.png","twitter_newbird_blue.pdf"]</code></p>
+
+<p><code>GET /file</code> will automatically force the file download if all the params are correct</p>
+
+<p><code>POST /upload</code> will return this if the upload was correct <code>{"saved":true,"url":"/file?name=twitter_newbird_blue.pdf&amp;bucket=ddd"}</code></p>
+
+<p>Any error will be in this format: <code>{"error":true,"type":error_code}</code> where <code>error_code</code> will always be an Integer</p>
+
+<h3>Disclaimer</h3>
+
+<p>This is in beta stage, it might contain bugs.</p>
+
+<h3>License</h3>
+
+<p>OpenS3 - OpenS3 is basically a storage server. What it does is provide a JSON API to upload and download files to a specified path. It includes a bucket feature to organize uploads</p>
+
+<p>Copyright (C) 2012 Pablo Merino</p>
+
+<p>This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.</p>
+
+<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p>
+
+<p>You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.</p>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->
+    
+  </body>
+</html>
