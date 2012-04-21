@@ -2,6 +2,8 @@
 
 OpenS3 is basically a storage server. What it does is provide a JSON API to upload and download files to a specified path. It includes a bucket feature to organize uploads.
 
+Install it now using `gem install opens3`!
+
 ### Details!
 Uses Thin as HTTP server and rack for interacting with it. For uploading, listing and downloading files you'll need a token, which is a SHA512 of a string you choose. You'll also need to set an expiry time for a link when downloading.
 
