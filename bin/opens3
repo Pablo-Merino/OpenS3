@@ -1,0 +1,40 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'rack'
+require 'opens3/opens3'
+require 'opens3/tools'
+require 'opens3/rack_file'
+require 'json'
+require 'yaml'
+require 'digest/md5'
+require 'trollop'
+require 'uri'
+require 'digest'
+
+opts = Trollop::options do
+	opt :dir, "Set OpenS3 storage directory", :short => '-d', :type => :string
+	opt :port, "Set OpenS3 server port", :short => '-p', :type => :int
+	opt :config, "Set config file", :short => '-c', :type => :string
+	opt :token, "Set token string", :short => '-t', :type => :string
+end
+
+if opts[:dir] and opts[:port] and opts[:token] and !opts[:config]
+	@port = opts[:port]
+	@dir = opts[:dir]
+	@token = opts[:token]
+
+elsif !opts[:dir] and !opts[:token] and !opts[:port] and opts[:config]
+	unless !File.exists?(opts[:config])
+		cfg = YAML::load(File.open(opts[:config]))
+		@port = cfg['port']
+		@dir = cfg['dir']
+		@token = cfg['token']
+	end
+end
+
+if @port and @dir and @token
+	Rack::Handler::Thin.run OpenS3.new(@dir,@token), :Port => @port.to_i
+else
+	puts "No port/directory/token or config file specified"
+end
