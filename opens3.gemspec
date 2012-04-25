@@ -1,6 +1,9 @@
+require File.expand_path('../lib/opens3/version', __FILE__)
+path = File.expand_path('../', __FILE__)
+
 Gem::Specification.new do |s|
   s.name    = 'OpenS3'
-  s.version = '0.1'
+  s.version = OpenS3::Version
   s.summary = 'A storage server'
   s.description = 'Build your own storage server'
 
@@ -8,8 +11,7 @@ Gem::Specification.new do |s|
   s.email    = 'pablo.perso1995@gmail.cin'
   s.homepage = 'https://github.com/pablo-merino/opens3'
 
-  # Include everything in the lib folder
-  s.files = Dir['lib/**/*']
+  s.files    = `cd #{path}; git ls-files`.split("\n").sort
   s.add_dependency 'json'
   s.add_dependency  'rack'
   s.add_dependency  'trollop'
