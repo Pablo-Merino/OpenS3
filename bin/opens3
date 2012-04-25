@@ -7,22 +7,28 @@ require 'trollop'
 
 opts = Trollop::options do
   opt :dir,    "OpenS3 storage directory", :short => '-d', :type => :string
+  opt :addr,   "OpenS3 server address",    :short => '-a', :type => :string
   opt :port,   "OpenS3 server port",       :short => '-p', :type => :int
+  opt :server, "Rack server to use",       :short => '-s', :type => :string
   opt :config, "Config file",              :short => '-c', :type => :string
   opt :token,  "Set token string",         :short => '-t', :type => :string
 end
 
 if opts[:dir] and opts[:port] and opts[:token] and !opts[:config]
-  @port  = opts[:port]
-  @dir   = opts[:dir]
-  @token = opts[:token]
+  @address = opts[:addr]   || "0.0.0.0"
+  @port    = opts[:port]   || "8000"
+  @dir     = opts[:dir]    || Dir.pwd 
+  @token   = opts[:token]  || Digest::SHA512.hexdigest(OpenS3::random_string)
+  @server  = opts[:server] || 'thin'
 
 elsif !opts[:dir] and !opts[:token] and !opts[:port] and opts[:config]
   unless !File.exists?(opts[:config])
     cfg = YAML::load(File.open(opts[:config]))
-    @port  = cfg['port']
-    @dir   = cfg['dir']
-    @token = cfg['token']
+    @address = cfg['address']
+    @port    = cfg['port']
+    @dir     = cfg['dir']
+    @token   = cfg['token']
+    @server  = cfg['server']
   end
 end
 
