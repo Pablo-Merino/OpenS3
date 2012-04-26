@@ -20,5 +20,5 @@ class UploadFormTest < Test::Unit::TestCase
     get "/list?token=opens3"
     assert_equal 403, last_response.status
   end
-g
+
 end
