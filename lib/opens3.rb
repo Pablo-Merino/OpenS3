@@ -18,7 +18,7 @@ module OpenS3
 
     def app(path, token)
       @file_path = path
-      @token     = token ? token : 'OpenS3'
+      @srv_token = token ? token : 'OpenS3'
       Rack::URLMap.new('/'       => OpenS3::UploadForm.new,
                        '/info'   => OpenS3::ServerInfo.new,
                        '/upload' => OpenS3::UploadFile.new,
