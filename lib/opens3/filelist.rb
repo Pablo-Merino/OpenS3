@@ -4,7 +4,7 @@ module OpenS3
 
     def call(env)
       request = Rack::Request.new(env)
-      params  = Rack::Utils.parse_nested_query(req.query_string)
+      params  = Rack::Utils.parse_nested_query(request.query_string)
       if !request.get?
         return OpenS3::send_error(:bad_method)
       elsif request.token != @srv_token
