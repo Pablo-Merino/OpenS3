@@ -11,8 +11,8 @@ require File.expand_path('../opens3/downloadfile' , __FILE__)
 
 module OpenS3
 
-  @file_path = nil
-  @srv_token = nil
+  @@file_path = nil
+  @@srv_token = nil
 
   class << self
 
