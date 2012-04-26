@@ -7,7 +7,7 @@ module OpenS3
       params  = Rack::Utils.parse_nested_query(request.query_string)
       if !request.get?
         return OpenS3::send_error(:bad_method)
-      elsif request.token != @srv_token
+      elsif request['token'] != @srv_token
         return OpenS3::send_error(:token_error)
       elsif !request.params['bucket']
         return OpenS3::send_error(:bucket_not_specified)
