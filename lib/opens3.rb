@@ -11,10 +11,10 @@ require File.expand_path('../opens3/downloadfile' , __FILE__)
 
 module OpenS3
 
-  @@file_path = nil
-  @@srv_token = nil
-
   class << self
+
+    attr_accessor :file_path
+    attr_accessor :srv_token
 
     def app(path, token)
       @file_path = path
