@@ -7,14 +7,14 @@ Gem::Specification.new do |s|
   s.summary = 'A storage server'
   s.description = 'Build your own storage server'
 
-  s.author   = 'Pablo Merino'
-  s.email    = 'pablo.perso1995@gmail.cin'
+  s.authors  = ['Pablo Merino', 'Squeeks']
+  s.email    = ['pablo.perso1995@gmail.com', 'privacymyass@gmail.com']
   s.homepage = 'https://github.com/pablo-merino/opens3'
 
   s.files    = `cd #{path}; git ls-files`.split("\n").sort
   s.add_dependency 'json'
-  s.add_dependency  'rack'
-  s.add_dependency  'trollop'
+  s.add_dependency 'rack'
+  s.add_dependency 'trollop'
 
   # Supress the warning about no rubyforge project
   s.rubyforge_project = 'nowarning'
