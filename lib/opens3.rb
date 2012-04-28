@@ -11,14 +11,16 @@ require File.expand_path('../opens3/downloadfile' , __FILE__)
 
 module OpenS3
 
+  OPTIONS = {
+    :path  => nil,
+    :token => nil
+  }
+
   class << self
 
-    attr_accessor :file_path
-    attr_accessor :srv_token
-
     def app(path, token)
-      @file_path = path
-      @srv_token = token ? token : 'OpenS3'
+      OPTIONS[:token] = token ? token : 'OpenS3'
+      OPTIONS[:path]  = path
       Rack::URLMap.new('/'       => OpenS3::UploadForm.new,
                        '/info'   => OpenS3::ServerInfo.new,
                        '/upload' => OpenS3::UploadFile.new,

@@ -6,7 +6,7 @@ module OpenS3
       requestuest = Rack::Request.new(env)
       if !request.post?
         return OpenS3::send_error(:bad_method)
-      elsif request.token != @srv_token
+      elsif request.token != OPTIONS[:token]
         return OpenS3::send_error(:token_error)
       elsif !request.params['file']
         return OpenS3::send_error(:no_file)
@@ -20,7 +20,7 @@ module OpenS3
       bucket = request.params['bucket']
 
       # TODO RackFile needs replacing
-      f = RackFile.new(params[:tempfile], params[:filename], params[:type], bucket, @file_path).save
+      f = RackFile.new(params[:tempfile], params[:filename], params[:type], bucket, OPTIONS[:path]).save
 
       if f
         url = URI.escape("/file?name=#{params[:filename]}&bucket=#{bucket}")
