@@ -14,7 +14,7 @@ module OpenS3
         return OpenS3::send_error(:bucket_not_specified)
       end
 
-      if Dir.exists?("#{OPTIONS[:path]}/#{params['bucket']}")
+      if File.directory?("#{OPTIONS[:path]}/#{params['bucket']}")
         files = Dir["#{OPTIONS[:path]}/#{params['bucket']}/*/"].map { |a| File.basename(a) }
         file_names = Array.new
         files.each do |d|
