@@ -67,6 +67,7 @@ link expiration.
 - 105: The link has expired
 - 106: Wrong token
 - 107: No file specified on the upload method
+- 108: Incorrect method (verb)
 
 #### Responses
 All the responses will be on JSON format.
