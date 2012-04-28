@@ -7,7 +7,7 @@ class UploadFormTest < Test::Unit::TestCase
   include Rack::Test::Methods
 
   def app
-    OpenS3.app("opens3","opens3")
+    OpenS3.app(".","opens3")
   end
 
   def test_filelist_notoken
@@ -18,13 +18,12 @@ class UploadFormTest < Test::Unit::TestCase
 
   def test_filelist_withtoken_nobucket
     get "/list?token=opens3"
-    assert_equal 403, last_response.status
+    assert_equal 400, last_response.status
   end
 
   def test_filelist_withtokenandbuck
     get "/list?token=opens3&bucket=#{OpenS3::random_string}"
-    assert_equal 403, last_response.status
-    puts last_response.body
+    assert_equal 400, last_response.status
   end
 
 end

@@ -7,7 +7,7 @@ class UploadFormTest < Test::Unit::TestCase
   include Rack::Test::Methods
 
   def app
-    OpenS3.app(".",".")
+    OpenS3.app(".","opens3")
   end
 
   def test_uploadform
