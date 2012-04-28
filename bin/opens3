@@ -2,39 +2,56 @@
 
 require 'rubygems'
 require 'rack'
-require 'opens3/opens3'
-require 'opens3/tools'
-require 'opens3/rack_file'
-require 'json'
-require 'yaml'
-require 'digest/md5'
-require 'trollop'
-require 'uri'
 require 'digest'
+require 'opens3'
+require 'trollop'
 
 opts = Trollop::options do
-	opt :dir, "Set OpenS3 storage directory", :short => '-d', :type => :string
-	opt :port, "Set OpenS3 server port", :short => '-p', :type => :int
-	opt :config, "Set config file", :short => '-c', :type => :string
-	opt :token, "Set token string", :short => '-t', :type => :string
+  opt :dir,    "OpenS3 storage directory", :short => '-d', :type => :string
+  opt :addr,   "OpenS3 server address",    :short => '-a', :type => :string
+  opt :port,   "OpenS3 server port",       :short => '-p', :type => :int
+  opt :server, "Rack server to use",       :short => '-s', :type => :string
+  opt :config, "Config file",              :short => '-c', :type => :string
+  opt :token,  "Set token string",         :short => '-t', :type => :string
 end
 
-if opts[:dir] and opts[:port] and opts[:token] and !opts[:config]
-	@port = opts[:port]
-	@dir = opts[:dir]
-	@token = opts[:token]
+if opts[:dir] and opts[:port] and !opts[:config]
+  @port    = opts[:port]
+  @dir     = opts[:dir]
+  @address = opts[:addr]   || "0.0.0.0"  
+  @token   = opts[:token]  || Digest::SHA512.hexdigest(OpenS3::random_string)
+  @server  = opts[:server] || 'thin'
 
-elsif !opts[:dir] and !opts[:token] and !opts[:port] and opts[:config]
-	unless !File.exists?(opts[:config])
-		cfg = YAML::load(File.open(opts[:config]))
-		@port = cfg['port']
-		@dir = cfg['dir']
-		@token = cfg['token']
-	end
+elsif !opts[:dir] and !opts[:port] and opts[:config]
+  unless !File.exists?(opts[:config])
+    cfg = YAML::load(File.open(opts[:config]))
+    @address = cfg['address']
+    @port    = cfg['port']
+    @dir     = cfg['dir']
+    @token   = cfg['token']
+    @server  = cfg['server']
+  end
 end
 
 if @port and @dir and @token
-	Rack::Handler::Thin.run OpenS3.new(@dir,@token), :Port => @port.to_i
+  puts "Server Token: #{@token}"
+  case @server
+    when 'thin'
+      Rack::Handler::Thin.run OpenS3.app(@dir, @token), 
+                              :Port => @port.to_i,
+                              :Host => @address
+    when 'mongrel'
+      Rack::Handler::Mongrel.run OpenS3.app(@dir, @token), 
+                              :Port => @port.to_i,
+                              :Host => @address
+    when 'unicorn'
+      Rack::Handler::Unicorn.run OpenS3.app(@dir, @token),
+                                 :listeners => ["#{@address}:#{@port.to_i}"]
+    else
+      Rack::Handler::Thin.run OpenS3.app(@dir, @token), 
+                              :Port => @port.to_i,
+                              :Host => @address
+  end
 else
-	puts "No port/directory/token or config file specified"
+  puts "No port/directory or config file specified"
 end
