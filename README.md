@@ -1,15 +1,11 @@
 # OpenS3
 
-OpenS3 is basically a storage server. What it does is provide a JSON API to
-upload and download files to a specified path. It includes a bucket feature to
-organize uploads.
-
-Install it now using `gem install opens3`!
+OpenS3 is a storage API that whilst presently contains its own API will
+eventually mimmic that of Amazon's S3 serivce.
 
 ### Details!
-Uses Thin as HTTP server and rack for interacting with it. For uploading,
-listing and downloading files you'll need a token, which is a SHA512 of a string
-you choose. You'll also need to set an expiry time for a link when downloading.
+The server is a pure rack application and can use any rack compatible server
+such as Thin or Unicorn. Authentication is currently token based.
 
 ### Configuration
 
@@ -17,12 +13,16 @@ The configuration is based on a YAML file:
 
 	---
 	dir: ./storage
+    address: 0.0.0.0    
 	port: 8000
 	token: TestKey
+    server: thin
 
-As you can see, `dir` sets the data directory, `port` sets the port where the
-server should listen and `token` sets the string which, after being SHA512'ed,
-will be the token.
+`dir` sets the data directory, `port` sets the port where the server should
+listen and `token` sets the string which, after being SHA512'ed, will be the
+token. `address` defines the interface to bind to, along with `server`
+specifying which rack compatible server to start with, by default Thin will be
+used.
 
 You can also configure this via command line
 	
@@ -36,14 +36,14 @@ The SHA512 token will be shown on the console on launch.
 
 ### API
 
-The API is simple:
-
 ##### Basic Upload form and Info
+
 `GET /` for the upload form
 
 `GET /info` for the info form, which only contains the hostname
 
 #### Upload
+
 `POST /upload`: You'll need to set the file to the `file` param, the previously
 mentioned token on the `token` param and the `bucket` param for the bucket
 (it'll be auto created if it doesn't exists).
@@ -59,6 +59,7 @@ token, and a `expire` param with the epoch time (`Time.now.to_i` in Ruby) of
 link expiration.
 
 #### Errors
+
 - 100: The path doesn't exists
 - 101: The file was not found
 - 102: The file already exists (not used since the upload replaces the current file)
@@ -70,6 +71,7 @@ link expiration.
 - 108: Incorrect method (verb)
 
 #### Responses
+
 All the responses will be on JSON format.
 `GET /info` will return something like `{"hostname":"localhost:8000"}` 
 
@@ -86,15 +88,11 @@ Any error will be in this format: `{"error":true,"type":error_code}` where
 
 ### Disclaimer
 
-This is in beta stage, it might contain bugs.
+This is presently alpha, it might contain bugs.
 
 ### License
 
-OpenS3 - OpenS3 is basically a storage server. What it does is provide a JSON
-API to upload and download files to a specified path. It includes a bucket
-feature to organize uploads
-
-Copyright (C) 2012 Pablo Merino
+Copyright (C) 2012 Pablo Merino, Squeeks
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
