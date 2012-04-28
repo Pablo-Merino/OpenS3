@@ -23,7 +23,7 @@ class UploadFormTest < Test::Unit::TestCase
 
   def test_filelist_withtokenandbuck
     get "/list?token=opens3&bucket=#{OpenS3::random_string}"
-    assert_equal 400, last_response.status
+    assert_equal 404, last_response.status
   end
 
 end
