@@ -6,9 +6,6 @@ module OpenS3
       request = Rack::Request.new(env)
       params  = Rack::Utils.parse_nested_query(request.query_string)
 
-      return [403, {"Content-Type" => "application/json"}, 
-      "#{{:file=>OPTIONS[:path], :tkn=>OPTIONS[:token]}.to_json}"]
-
       if !request.get?
         return OpenS3::send_error(:bad_method)
       elsif params['token'] != OPTIONS[:token] 
