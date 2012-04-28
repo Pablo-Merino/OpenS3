@@ -1,6 +1,7 @@
 require 'rack/request'
 require 'json'
 require 'yaml'
+require 'uri'
 
 require File.expand_path('../opens3/uploadform'   , __FILE__)
 require File.expand_path('../opens3/uploadfile'   , __FILE__)
