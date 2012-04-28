@@ -14,11 +14,11 @@ module OpenS3
         return OpenS3::send_error(:bucket_not_specified)
       end
 
-      if Dir.exists?("#{OPTIONS[:path]}/#{query['bucket']}")
-        files = Dir["#{OPTIONS[:path]}/#{query['bucket']}/*/"].map { |a| File.basename(a) }
+      if Dir.exists?("#{OPTIONS[:path]}/#{params['bucket']}")
+        files = Dir["#{OPTIONS[:path]}/#{params['bucket']}/*/"].map { |a| File.basename(a) }
         file_names = Array.new
         files.each do |d|
-            meta = YAML::load(File.open("#{OPTIONS[:path]}/#{query['bucket']}/#{d}/meta"))
+            meta = YAML::load(File.open("#{OPTIONS[:path]}/#{params['bucket']}/#{d}/meta"))
             file_names.push(meta['filename'])
         end
         return [200, {"Content-Type" => "application/json"}, "#{file_names.to_json}"]
