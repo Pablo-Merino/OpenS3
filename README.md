@@ -1,3 +1,5 @@
+## This branch is the fork of [Squeeks](http://github.com/squeeks) as of April 28, 2012
+
 # OpenS3
 
 OpenS3 is basically a storage server. What it does is provide a JSON API to upload and download files to a specified path. It includes a bucket feature to organize uploads.
